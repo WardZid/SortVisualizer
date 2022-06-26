@@ -1,7 +1,11 @@
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
@@ -24,13 +28,30 @@ public class SortController implements Initializable {
     @FXML
     private GridPane grid;
 
+    @FXML
+    private Label sizeLbl;
+
+    @FXML
+    private Slider sizeSlider;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         grid.getChildren().clear();
         grid.setPadding(new Insets(5));
         grid.getRowConstraints().get(0).setValignment(VPos.BOTTOM);
+
         Stop[] stops = new Stop[] { new Stop(0, Color.WHITE), new Stop(1, Color.GREY)};
         linear = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+
+
+        sizeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            sizeLbl.textProperty().setValue(
+                    String.valueOf(newValue.intValue()));
+            size=newValue.intValue();
+            initArrays();
+            buildGrid();
+        });
+
         initArrays();
         shuffleArray();
         buildGrid();
@@ -39,8 +60,8 @@ public class SortController implements Initializable {
     public void onSort() {
         System.out.println("sort");
         new Thread(() -> {
-            sortArray();
-            sortArray();
+            insertionSort();
+            insertionSort();
         }).start();
 
         System.out.println("sort started");
@@ -48,8 +69,7 @@ public class SortController implements Initializable {
 
     public void onShuffle() {
         System.out.println("shuffle");
-        shuffleArray();
-        buildGrid();
+        new Thread(this::shuffleArray).start();
     }
 
     private void buildGrid(){
@@ -74,6 +94,8 @@ public class SortController implements Initializable {
         random.nextInt();
         for (int i = 0; i < n; i++) {
             int change = i + random.nextInt(n - i);
+            slow();
+            swapRec(i,change);
             swap(i, change);
         }
     }
@@ -89,7 +111,7 @@ public class SortController implements Initializable {
         array[change] = helper;
     }
 
-    private void sortArray(){
+    private void insertionSort(){
         Rectangle curRec;
         for (int i = 1,j=0,current; i < size; i++,j=i-1) {
 
