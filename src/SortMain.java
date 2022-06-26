@@ -25,4 +25,9 @@ public class SortMain extends Application {
         }
 
     }
+
+    @Override
+    public void stop() throws Exception {
+        System.exit(0);
+    }
 }
