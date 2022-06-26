@@ -4,8 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
@@ -16,6 +15,11 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class SortController implements Initializable {
+
+    private static final String quick= "Quick Sort";
+    private static final String insertion= "Insertion Sort";
+
+    private String sort=insertion;
 
     private int size=50;
 
@@ -34,6 +38,9 @@ public class SortController implements Initializable {
     @FXML
     private Slider sizeSlider;
 
+    @FXML
+    private ToggleGroup sortGroup;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         grid.getChildren().clear();
@@ -43,6 +50,19 @@ public class SortController implements Initializable {
         Stop[] stops = new Stop[] { new Stop(0, Color.WHITE), new Stop(1, Color.GREY)};
         linear = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
 
+        sortGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            RadioButton btn=(RadioButton) newValue;
+            switch (btn.getText()){
+                case insertion:
+                    sort=insertion;
+                    break;
+                case quick:
+                    sort=quick;
+                    break;
+                default:
+                    break;
+            }
+        });
 
         sizeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             sizeLbl.textProperty().setValue(
@@ -60,8 +80,8 @@ public class SortController implements Initializable {
     public void onSort() {
         System.out.println("sort");
         new Thread(() -> {
-            insertionSort();
-            insertionSort();
+            sort();
+            pass();
         }).start();
 
         System.out.println("sort started");
@@ -111,6 +131,35 @@ public class SortController implements Initializable {
         array[change] = helper;
     }
 
+    private void pass(){
+        for (int i = 0; i < recs.length; i++) {
+            if(i>0)
+                colorRec(recs[i-1],Color.GREEN);
+            if(i< recs.length-1)
+                colorRec(recs[i+1],Color.GREEN);
+            colorRec(recs[i],Color.GREEN);
+            Tone.beep(array[i]*10);
+
+            if(i>0)
+                colorRec(recs[i-1],linear);
+            if(i< recs.length-1)
+                colorRec(recs[i+1],linear);
+            colorRec(recs[i],linear);
+        }
+    }
+
+    private void sort(){
+        switch (sort){
+            case insertion:
+                insertionSort();
+                break;
+            case quick:
+                quickSort(0,array.length-1);
+                break;
+            default:
+                break;
+        }
+    }
     private void insertionSort(){
         Rectangle curRec;
         for (int i = 1,j=0,current; i < size; i++,j=i-1) {
@@ -131,6 +180,43 @@ public class SortController implements Initializable {
             slow();
             colorRec(curRec,linear);
         }
+    }
+
+    public void quickSort(int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = partition(begin, end);
+
+            quickSort(begin, partitionIndex-1);
+
+            quickSort(partitionIndex+1, end);
+
+        }
+    }
+
+    private int partition(int begin, int end) {
+        colorRec(recs[end],Color.RED);
+        int pivot = array[end];
+        int i = (begin-1);
+        Tone.beep(array[end]*10);
+        for (int j = begin; j < end; j++) {
+            if (array[j] <= pivot) {
+                i++;
+                colorRec(recs[i],Color.GREEN);
+                colorRec(recs[j],Color.BLUE);
+                Tone.beep(array[j]*10);
+                swapRec(i,j);
+                swap(i,j);
+
+                colorRec(recs[i],linear);
+                colorRec(recs[j],linear);
+            }
+        }
+        slow();
+        colorRec(recs[end],linear);
+        swapRec(i+1,end);
+        swap(i+1,end);
+
+        return i+1;
     }
     private void colorRec(Rectangle rectangle, Paint p){
         final Rectangle rc=rectangle;
