@@ -1,16 +1,16 @@
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -18,6 +18,8 @@ public class SortController implements Initializable {
 
     private static final String quick= "Quick Sort";
     private static final String insertion= "Insertion Sort";
+
+    private Thread sortThread;
 
     private String sort=insertion;
 
@@ -75,15 +77,15 @@ public class SortController implements Initializable {
         initArrays();
         shuffleArray();
         buildGrid();
+
+        sortThread=new Thread(() -> {
+            sort();
+            pass();
+        });
     }
 
     public void onSort() {
-        System.out.println("sort");
-        new Thread(() -> {
-            sort();
-            pass();
-        }).start();
-
+        sortThread.start();
         System.out.println("sort started");
     }
 
