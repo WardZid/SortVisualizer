@@ -2,13 +2,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.Random;
@@ -16,10 +15,22 @@ import java.util.ResourceBundle;
 
 public class SortController implements Initializable {
 
+    //Sorts available
     private static final String quick= "Quick Sort";
     private static final String insertion= "Insertion Sort";
 
-    private Thread sortThread;
+    //Sort complexities
+    static final String worstInsertion="O(n\u00B2)";
+    static final String avgInsertion="O(n\u00B2)";
+    static final String bestInsertion="O(n)";
+    static final String spaceInsertion="O(1)";
+
+    static final String worstQuick="O(n\u00B2)";
+    static final String avgQuick="O(n\u00B7log(n))";
+    static final String bestQuick="O(n\u00B7log(n))";
+    static final String spaceQuick="O(n)";
+
+    Runnable sortRunnable;
 
     private String sort=insertion;
 
@@ -35,13 +46,31 @@ public class SortController implements Initializable {
     private GridPane grid;
 
     @FXML
+    private VBox controlVBox;
+
+    @FXML
     private Label sizeLbl;
 
     @FXML
     private Slider sizeSlider;
 
     @FXML
+    private Button sortBtn;
+
+    @FXML
     private ToggleGroup sortGroup;
+
+    @FXML
+    private Text avgText;
+
+    @FXML
+    private Text bestText;
+
+    @FXML
+    private Text spaceText;
+
+    @FXML
+    private Text worstText;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -57,14 +86,27 @@ public class SortController implements Initializable {
             switch (btn.getText()){
                 case insertion:
                     sort=insertion;
+                    worstText.setText(worstInsertion);
+                    avgText.setText(avgInsertion);
+                    bestText.setText(bestInsertion);
+                    spaceText.setText(spaceInsertion);
                     break;
                 case quick:
                     sort=quick;
+                    worstText.setText(worstQuick);
+                    avgText.setText(avgQuick);
+                    bestText.setText(bestQuick);
+                    spaceText.setText(spaceQuick);
                     break;
                 default:
                     break;
             }
         });
+
+        worstText.setText(worstInsertion);
+        avgText.setText(avgInsertion);
+        bestText.setText(bestInsertion);
+        spaceText.setText(spaceInsertion);
 
         sizeSlider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             sizeLbl.textProperty().setValue(
@@ -78,14 +120,16 @@ public class SortController implements Initializable {
         shuffleArray();
         buildGrid();
 
-        sortThread=new Thread(() -> {
+        sortRunnable= () -> {
+            controlVBox.setDisable(true);
             sort();
             pass();
-        });
+            controlVBox.setDisable(false);
+        };
     }
 
     public void onSort() {
-        sortThread.start();
+        new Thread(sortRunnable).start();
         System.out.println("sort started");
     }
 
@@ -111,6 +155,8 @@ public class SortController implements Initializable {
         }
     }
     public void shuffleArray() {
+        sortBtn.setDisable(true);
+
         int n = array.length;
         Random random = new Random();
         random.nextInt();
@@ -120,6 +166,8 @@ public class SortController implements Initializable {
             swapRec(i,change);
             swap(i, change);
         }
+
+        sortBtn.setDisable(false);
     }
 
     private void swap(int i, int change) {
