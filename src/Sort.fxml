@@ -58,6 +58,11 @@
                                     <Font size="14.0" />
                                  </font>
                               </RadioButton>
+                              <RadioButton layoutX="16.0" layoutY="73.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Bubble Sort" toggleGroup="$sortGroup">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </RadioButton>
                               <Label text="Sort Complexity" underline="true">
                                  <font>
                                     <Font name="System Bold" size="18.0" />

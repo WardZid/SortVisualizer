@@ -16,19 +16,25 @@ import java.util.ResourceBundle;
 public class SortController implements Initializable {
 
     //Sorts available
-    private static final String quick= "Quick Sort";
     private static final String insertion= "Insertion Sort";
+    private static final String quick= "Quick Sort";
+    private static final String bubble= "Bubble Sort";
 
     //Sort complexities
-    static final String worstInsertion="O(n\u00B2)";
+    static final String worstInsertion="O(n\u00B2)"; //n^2
     static final String avgInsertion="O(n\u00B2)";
     static final String bestInsertion="O(n)";
     static final String spaceInsertion="O(1)";
 
     static final String worstQuick="O(n\u00B2)";
-    static final String avgQuick="O(n\u00B7log(n))";
+    static final String avgQuick="O(n\u00B7log(n))"; //n*log(n)
     static final String bestQuick="O(n\u00B7log(n))";
     static final String spaceQuick="O(n)";
+
+    static final String worstBubble="O(n\u00B2)";
+    static final String avgBubble="O(n\u00B2)";
+    static final String bestBubble="O(n)";
+    static final String spaceBubble="O(1)";
 
     Runnable sortRunnable;
 
@@ -97,6 +103,13 @@ public class SortController implements Initializable {
                     avgText.setText(avgQuick);
                     bestText.setText(bestQuick);
                     spaceText.setText(spaceQuick);
+                    break;
+                case bubble:
+                    sort=bubble;
+                    worstText.setText(worstBubble);
+                    avgText.setText(avgBubble);
+                    bestText.setText(bestBubble);
+                    spaceText.setText(spaceBubble);
                     break;
                 default:
                     break;
@@ -206,6 +219,9 @@ public class SortController implements Initializable {
             case quick:
                 quickSort(0,array.length-1);
                 break;
+            case bubble:
+                bubbleSort();
+                break;
             default:
                 break;
         }
@@ -231,8 +247,7 @@ public class SortController implements Initializable {
             colorRec(curRec,linear);
         }
     }
-
-    public void quickSort(int begin, int end) {
+    private void quickSort(int begin, int end) {
         if (begin < end) {
             int partitionIndex = partition(begin, end);
 
@@ -242,7 +257,6 @@ public class SortController implements Initializable {
 
         }
     }
-
     private int partition(int begin, int end) {
         colorRec(recs[end],Color.RED);
         int pivot = array[end];
@@ -267,6 +281,21 @@ public class SortController implements Initializable {
         swap(i+1,end);
 
         return i+1;
+    }
+
+    private void bubbleSort(){
+        for (int i = 0; i < size; i++) {
+            for (int j = 1; j < size; j++) {
+                if(array[j-1]>array[j]){
+                    colorRec(recs[j-1],Color.GREEN);
+                    Tone.beep(array[j]*10);
+                    swapRec(j-1,j);
+                    swap(j-1,j);
+                    slow();
+                    colorRec(recs[j],linear);
+                }
+            }
+        }
     }
     private void colorRec(Rectangle rectangle, Paint p){
         final Rectangle rc=rectangle;
