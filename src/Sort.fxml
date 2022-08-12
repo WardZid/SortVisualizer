@@ -6,6 +6,8 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -21,10 +23,74 @@
          <children>
             <VBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" spacing="5.0">
                <children>
+                  <HBox fx:id="controlsHBox" alignment="CENTER" spacing="5.0" style="-fx-background-color: #CCC; -fx-background-radius: 30;">
+                     <children>
+                        <Button fx:id="playBtn" mnemonicParsing="false" onMousePressed="#onPlay" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/play.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="pauseBtn" mnemonicParsing="false" onMousePressed="#onPause" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/pause.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="stopBtn" mnemonicParsing="false" onMousePressed="#onStop" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/stop.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
                   <VBox fx:id="controlVBox" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" spacing="5.0">
                      <children>
-                        <Button fx:id="sortBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSort" style="-fx-background-color: #CCCCCC; -fx-text-fill: black;" text="Sort" />
-                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onShuffle" style="-fx-text-fill: black; -fx-background-color: #CCCCCC;" text="Shuffle" />
+                        <Button fx:id="sortBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSort" style="-fx-background-color: #CCCCCC; -fx-text-fill: black;">
+                           <graphic>
+                              <HBox alignment="CENTER">
+                                 <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/sort.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Sort" HBox.hgrow="ALWAYS" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="50.0" right="50.0" />
+                                 </padding>
+                              </HBox>
+                           </graphic></Button>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onShuffle" style="-fx-text-fill: black; -fx-background-color: #CCCCCC;">
+                           <graphic>
+                              <HBox alignment="CENTER">
+                                 <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/shuffle.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Shuffle" HBox.hgrow="ALWAYS" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="50.0" right="50.0" />
+                                 </padding>
+                              </HBox>
+                           </graphic></Button>
                         <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: #faedcd; -fx-border-color: grey; -fx-border-radius: 5; -fx-background-radius: 5;">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

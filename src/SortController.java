@@ -3,7 +3,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
@@ -36,7 +39,7 @@ public class SortController implements Initializable {
     static final String bestBubble="O(n)";
     static final String spaceBubble="O(1)";
 
-    Runnable sortRunnable;
+    Thread sortThread;
 
     private String sort=insertion;
 
@@ -55,10 +58,24 @@ public class SortController implements Initializable {
     private VBox controlVBox;
 
     @FXML
+    private HBox controlsHBox;
+
+    @FXML
     private Label sizeLbl;
 
     @FXML
     private Slider sizeSlider;
+
+
+    //Play Pause Stop Buttons and ImageViews
+    @FXML
+    private Button playBtn;
+
+    @FXML
+    private Button pauseBtn;
+
+    @FXML
+    private Button stopBtn;
 
     @FXML
     private Button sortBtn;
@@ -116,6 +133,10 @@ public class SortController implements Initializable {
             }
         });
 
+        playBtn.setDisable(true);
+        pauseBtn.setDisable(true);
+        stopBtn.setDisable(true);
+
         worstText.setText(worstInsertion);
         avgText.setText(avgInsertion);
         bestText.setText(bestInsertion);
@@ -133,16 +154,61 @@ public class SortController implements Initializable {
         shuffleArray();
         buildGrid();
 
-        sortRunnable= () -> {
+        sortThread=new Thread(() -> {
+
+            playBtn.setDisable(true);
+            pauseBtn.setDisable(false);
+            stopBtn.setDisable(false);
+
             controlVBox.setDisable(true);
+
             sort();
-            pass();
+            //pass();
+
             controlVBox.setDisable(false);
-        };
+            playBtn.setDisable(true);
+            pauseBtn.setDisable(true);
+            stopBtn.setDisable(true);
+
+        });
+    }
+
+    @FXML
+    void onPlay() {
+        System.out.println("onPlay");
+        playBtn.setDisable(true);
+        pauseBtn.setDisable(false);
+        stopBtn.setDisable(false);
+        sortThread.notify();
+    }
+
+    @FXML
+    void onPause() {
+        System.out.println("onPause");
+        playBtn.setDisable(false);
+        pauseBtn.setDisable(true);
+        try {
+            sortThread.wait();
+//            sortThread.sleep();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    void onStop() {
+        System.out.println("onStop");
+        sortThread.interrupt();
+
+        playBtn.setDisable(true);
+        pauseBtn.setDisable(true);
+        stopBtn.setDisable(true);
+
+        controlVBox.setDisable(false);
     }
 
     public void onSort() {
-        new Thread(sortRunnable).start();
+        sortThread.start();
         System.out.println("sort started");
     }
 
@@ -275,7 +341,7 @@ public class SortController implements Initializable {
                 colorRec(recs[j],linear);
             }
         }
-        slow();
+//        slow();
         colorRec(recs[end],linear);
         swapRec(i+1,end);
         swap(i+1,end);
