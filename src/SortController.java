@@ -40,6 +40,7 @@ public class SortController implements Initializable {
     static final String spaceBubble="O(1)";
 
     Thread sortThread;
+    Runnable sortRunnable;
 
     private String sort=insertion;
 
@@ -153,9 +154,7 @@ public class SortController implements Initializable {
         initArrays();
         shuffleArray();
         buildGrid();
-
-        sortThread=new Thread(() -> {
-
+        sortRunnable= () -> {
             playBtn.setDisable(true);
             pauseBtn.setDisable(false);
             stopBtn.setDisable(false);
@@ -169,8 +168,9 @@ public class SortController implements Initializable {
             playBtn.setDisable(true);
             pauseBtn.setDisable(true);
             stopBtn.setDisable(true);
-
-        });
+            System.out.println("sort finito");
+        };
+        System.out.println(sortThread);
     }
 
     @FXML
@@ -187,12 +187,16 @@ public class SortController implements Initializable {
         System.out.println("onPause");
         playBtn.setDisable(false);
         pauseBtn.setDisable(true);
-        try {
-            sortThread.wait();
-//            sortThread.sleep();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            //this isnt working ffs
+//            synchronized (sortThread){
+//
+//                sortThread.wait();
+//            }
+////            sortThread.sleep();
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @FXML
@@ -208,6 +212,7 @@ public class SortController implements Initializable {
     }
 
     public void onSort() {
+        sortThread=new Thread(sortRunnable);
         sortThread.start();
         System.out.println("sort started");
     }
