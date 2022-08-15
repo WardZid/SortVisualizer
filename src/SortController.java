@@ -179,7 +179,7 @@ public class SortController implements Initializable {
         playBtn.setDisable(true);
         pauseBtn.setDisable(false);
         stopBtn.setDisable(false);
-        sortThread.notify();
+        sortThread.resume();
     }
 
     @FXML
@@ -187,6 +187,7 @@ public class SortController implements Initializable {
         System.out.println("onPause");
         playBtn.setDisable(false);
         pauseBtn.setDisable(true);
+        sortThread.suspend();
 //        try {
 //            //this isnt working ffs
 //            synchronized (sortThread){
@@ -202,7 +203,7 @@ public class SortController implements Initializable {
     @FXML
     void onStop() {
         System.out.println("onStop");
-        sortThread.interrupt();
+        sortThread.stop();
 
         playBtn.setDisable(true);
         pauseBtn.setDisable(true);
