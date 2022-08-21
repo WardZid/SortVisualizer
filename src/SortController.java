@@ -188,17 +188,9 @@ public class SortController implements Initializable {
         System.out.println("onPause");
         playBtn.setDisable(false);
         pauseBtn.setDisable(true);
-        sortThread.suspend();
-//        try {
-//            //this isnt working ffs
-//            synchronized (sortThread){
-//
-//                sortThread.wait();
-//            }
-////            sortThread.sleep();
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+        synchronized (beepLock) {
+            sortThread.suspend();
+        }
     }
 
     @FXML
