@@ -99,6 +99,7 @@ public class SortController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println(Thread.getAllStackTraces().keySet().size());
         grid.getChildren().clear();
         grid.setPadding(new Insets(5));
         grid.getRowConstraints().get(0).setValignment(VPos.BOTTOM);
@@ -171,44 +172,57 @@ public class SortController implements Initializable {
             stopBtn.setDisable(true);
             System.out.println("sort finito");
         };
-        System.out.println(sortThread);
+        System.out.println(Thread.getAllStackTraces().keySet().size());
     }
 
     @FXML
     void onPlay() {
         System.out.println("onPlay");
-        playBtn.setDisable(true);
-        pauseBtn.setDisable(false);
-        stopBtn.setDisable(false);
-        sortThread.resume();
+        controlsHBox.setDisable(true);
+        synchronized (beepLock) {
+            System.out.println("doing");
+            sortThread.resume();
+            playBtn.setDisable(true);
+            pauseBtn.setDisable(false);
+            stopBtn.setDisable(false);
+            System.out.println("finished");
+        }
+        controlsHBox.setDisable(false);
     }
 
     @FXML
     void onPause() {
         System.out.println("onPause");
-        playBtn.setDisable(false);
-        pauseBtn.setDisable(true);
+        controlsHBox.setDisable(true);
         synchronized (beepLock) {
+            System.out.println("doing");
             sortThread.suspend();
+            pauseBtn.setDisable(true);
+            playBtn.setDisable(false);
+            stopBtn.setDisable(false);
+            System.out.println("finished");
         }
+        controlsHBox.setDisable(false);
     }
 
     @FXML
     void onStop() {
         System.out.println("onStop");
+        controlsHBox.setDisable(true);
         synchronized (beepLock) {
+            System.out.println("doing");
             sortThread.stop();
+            playBtn.setDisable(true);
+            pauseBtn.setDisable(true);
+            stopBtn.setDisable(true);
+            System.out.println("finished");
         }
-
-        playBtn.setDisable(true);
-        pauseBtn.setDisable(true);
-        stopBtn.setDisable(true);
-
+        controlsHBox.setDisable(false);
         controlVBox.setDisable(false);
     }
 
     public void onSort() {
-        sortThread=new Thread(sortRunnable);
+        sortThread = new Thread(sortRunnable);
         sortThread.start();
         System.out.println("sort started");
     }
@@ -400,7 +414,9 @@ public class SortController implements Initializable {
 
     private void doTheBeep(int i){
         synchronized (beepLock) {
+            System.out.println("doing");
             Tone.beep(i * 10);
+            System.out.println("finished");
         }
     }
 }

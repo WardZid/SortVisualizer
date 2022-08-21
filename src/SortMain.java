@@ -14,6 +14,7 @@ public class SortMain extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        System.out.println("Initial Threads 1: \t"+Thread.getAllStackTraces().keySet().size()+" - "+Thread.getAllStackTraces().keySet());
         try {
             Parent root= FXMLLoader.load(getClass().getResource("Sort.fxml"));
             primaryStage.setScene(new Scene(root));
@@ -23,11 +24,12 @@ public class SortMain extends Application {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        System.out.println("Initial Threads 2: \t"+Thread.getAllStackTraces().keySet().size()+" - "+Thread.getAllStackTraces().keySet());
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop(){
+        System.out.println("Final Threads: \t\t"+Thread.getAllStackTraces().keySet().size()+" - "+Thread.getAllStackTraces().keySet());
         System.exit(0);
     }
 }
