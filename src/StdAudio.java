@@ -85,9 +85,6 @@ public final class StdAudio {
         buffer[bufferSize++] = (byte) s;
         buffer[bufferSize++] = (byte) (s >> 8);   // little Endian
 
-//        buffer[(++bufferSize>=buffer.length)? buffer.length-1 : bufferSize] = (byte) s;
-//        buffer[(++bufferSize>=buffer.length)? buffer.length-1 : bufferSize] = (byte) (s >> 8);   // little Endian
-
         // send to sound card if buffer is full
         if (bufferSize >= buffer.length) {
             line.write(buffer, 0, buffer.length);
