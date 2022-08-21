@@ -41,6 +41,7 @@ public class SortController implements Initializable {
 
     Thread sortThread;
     Runnable sortRunnable;
+    Object beepLock=new Object();//so nothing interferes with the beep
 
     private String sort=insertion;
 
@@ -203,7 +204,9 @@ public class SortController implements Initializable {
     @FXML
     void onStop() {
         System.out.println("onStop");
-        sortThread.stop();
+        synchronized (beepLock) {
+            sortThread.stop();
+        }
 
         playBtn.setDisable(true);
         pauseBtn.setDisable(true);
@@ -234,8 +237,8 @@ public class SortController implements Initializable {
         recs =new Rectangle[size];
         array=new int[size];
         for (int i = 0; i < size; i++) {
-            array[i]=(i+1)*(600/size);
-            recs[i] = new Rectangle(800 / size, array[i]);
+            array[i]=(i+1);
+            recs[i] = new Rectangle(800 / size, array[i]*(600/size));
             recs[i].setFill(linear);
         }
     }
@@ -273,8 +276,7 @@ public class SortController implements Initializable {
             if(i< recs.length-1)
                 colorRec(recs[i+1],Color.GREEN);
             colorRec(recs[i],Color.GREEN);
-            Tone.beep(array[i]*10);
-
+            doTheBeep(array[i]);
             if(i>0)
                 colorRec(recs[i-1],linear);
             if(i< recs.length-1)
@@ -305,7 +307,7 @@ public class SortController implements Initializable {
             current=array[i];
             curRec=recs[i];
             colorRec(curRec,Color.GREEN);
-            Tone.beep(array[i]*10);
+            doTheBeep(array[i]);
             while (j>=0 && current< array[j]){
                 array[j+1] =array[j];
                 add(recs[j],j+1);
@@ -333,13 +335,13 @@ public class SortController implements Initializable {
         colorRec(recs[end],Color.RED);
         int pivot = array[end];
         int i = (begin-1);
-        Tone.beep(array[end]*10);
+        doTheBeep(array[end]);
         for (int j = begin; j < end; j++) {
             if (array[j] <= pivot) {
                 i++;
                 colorRec(recs[i],Color.GREEN);
                 colorRec(recs[j],Color.BLUE);
-                Tone.beep(array[j]*10);
+                doTheBeep(array[j]);
                 swapRec(i,j);
                 swap(i,j);
 
@@ -360,7 +362,7 @@ public class SortController implements Initializable {
             for (int j = 1; j < size; j++) {
                 if(array[j-1]>array[j]){
                     colorRec(recs[j-1],Color.GREEN);
-                    Tone.beep(array[j]*10);
+                    doTheBeep(array[j]);
                     swapRec(j-1,j);
                     swap(j-1,j);
                     slow();
@@ -402,5 +404,11 @@ public class SortController implements Initializable {
         remove(ind2);
         add(recs[ind1],ind2);
         add(recs[ind2],ind1);
+    }
+
+    private void doTheBeep(int i){
+        synchronized (beepLock) {
+            Tone.beep(i * 10);
+        }
     }
 }
